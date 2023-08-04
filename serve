@@ -1,0 +1,112 @@
+import React, { useState, useEffect } from 'react';
+import { View, Image, Button, StyleSheet, Alert } from 'react-native';
+import * as ImagePicker from 'expo-image-picker';
+import { Cloudinary } from "@cloudinary/url-gen";
+
+const App3 = () => {
+  const [image, setImage] = useState(null);
+
+  useEffect(() => {
+    (async () => {
+      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (status !== 'granted') {
+        Alert.alert('Permiso denegado', 'Se necesita permiso para acceder a la cámara y la galería.');
+      }
+    })();
+  }, []);
+
+  const handleImagePicker = async () => {
+    try {
+      const result = await ImagePicker.launchCameraAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        quality: 1,
+      });
+
+      if (!result.cancelled) {
+        console.log("ds");
+        //setImage(result.uri);
+      }
+    } catch (error) {
+      console.log('Error al tomar la foto:', error);
+    }
+  };
+
+  const handleEnviar = async () => {
+    if (image) {
+      try {     
+           console.log("eds");
+
+              /*
+        // Crea una instancia de Cloudinary
+        const cld = new Cloudinary({ cloud: { cloudName: 'c4e0c2cbc5090006e6b2df6d4f6ce0fcc4' } });
+
+        // Construye la URL de la imagen desde Cloudinary
+        const imageUrl = cld.image('imagen.jpg').toURL();
+
+        // Crea un objeto FormData para enviar la imagen
+        const formData = new FormData();
+        formData.append('file', { uri: image, name: 'imagen.jpg', type: 'image/jpg' });
+
+  
+        // Configura la opción de envío para Cloudinary
+        const cloudinaryOptions = {
+          method: 'POST',
+          body: formData,
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        };
+
+        // Envía la imagen a Cloudinary mediante fetch
+        const response = await fetch(imageUrl, cloudinaryOptions);
+
+        // Aquí puedes manejar la respuesta de Cloudinary si es necesario
+        console.log('Respuesta de Cloudinary:', response);
+
+        setImage(null);
+        */
+      } catch (error) {
+        console.log('Error al enviar la imagen:', error);
+      }
+    }
+  };
+
+  return (
+    <View style={styles.container}>
+      {image ? (
+        <>
+          <Image source={{ uri: image }} style={styles.image} resizeMode="contain" />
+          <Button title="Enviar a Cloudinary" onPress={handleEnviar} />
+        </>
+      ) : (
+        <View style={styles.previewContainer}>
+          <Button title="Tomar Foto" onPress={() => handleImagePicker()} />
+        </View>
+      )}
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  previewContainer: {
+    width: '80%',
+    height: '50%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: 'black',
+    borderRadius: 10,
+  },
+  image: {
+    width: '80%',
+    height: '80%',
+  },
+});
+
+export default App;
