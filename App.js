@@ -1,4 +1,3 @@
-// Código del Grupo 1
 import React, { useState, useEffect } from 'react';
 import { View, Image, StyleSheet, Alert } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
@@ -7,6 +6,7 @@ import axios from 'axios';
 
 const App = () => {
   const [image, setImage] = useState(null);
+  const userAccessToken = 'e7eefedec49196bf8229bedb7324c29d72ef4bd3'; // Reemplaza 'YOUR_USER_ACCESS_TOKEN' con el token de acceso de usuario obtenido.
 
   useEffect(() => {
     (async () => {
@@ -41,7 +41,7 @@ const App = () => {
         
         const response = await axios.post('https://api.imgur.com/3/image', formData, {
           headers: {
-            'Authorization': 'Client-ID ee0c72edd17d07a',
+            'Authorization': `Bearer ${userAccessToken}`, // Incluye el token de acceso de usuario en el encabezado de autorización.
             'Content-Type': 'multipart/form-data',
           },
         });
@@ -50,7 +50,7 @@ const App = () => {
           // La imagen se ha subido exitosamente.
           const uploadedImageUrl = response.data.data.link;
           console.log('Imagen subida con éxito:', uploadedImageUrl);
-          setImage(null)
+          setImage(null);
         } else {
           console.log('Error al subir la imagen:', response.data);
         }
@@ -59,6 +59,10 @@ const App = () => {
       }
     }
   };
+
+  const handleVerImagen = () => {
+    alert('AKER')
+  }
 
   return (
     <View style={styles.container}>
@@ -72,6 +76,8 @@ const App = () => {
           <Button title="Tomar Foto" onPress={handleImagePicker} />
         </View>
       )}
+      <Button title={'Ver imagen'} onPress={() => handleVerImagen()} />
+      {/* zona para la imagen */}
     </View>
   );
 };
